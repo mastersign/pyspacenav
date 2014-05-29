@@ -6,7 +6,7 @@ spacenavmodule = Extension(
 	'spacenav', 
 	library_dirs = ['/usr/local/include'],
 	libraries = ['spnav'],
-	sources = ['spacenavmodule.c'])
+	sources = ['src/spacenavmodule.c'])
 
 setup(
 	name = 'SpaceNavigator',
