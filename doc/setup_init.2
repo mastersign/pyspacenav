@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# adds LSB to default init script and installs it 
+
+rm -f init_script.2
+cp init_script init_script.2
+
+sed -i -f - init_script.2 <<- "EOF"
+2 i\
+	### BEGIN INIT INFO \
+	# Provides:          spacenavd \
+	# Required-Start:    $local_fs \
+	# Required-Stop:     $local_fs \
+	# Default-Start:     2 3 \
+	# Default-Stop:      0 1 \
+	# Short-Description: a free user space driver for connexion input devices \
+	### END INIT INFO \
+
+EOF
+
+rm -f /etc/init.d/spacenavd
+install -m 755 init_script.2 /etc/init.d/spacenavd
+
+cd /etc/rc0.d
+rm -f K01spacenavd
+ln -s ../init.d/spacenavd K01spacenavd
+
+cd /etc/rc1.d
+rm -f K01spacenavd
+ln -s ../init.d/spacenavd K01spacenavd
+
+cd /etc/rc2.d
+rm -f S99spacenavd
+ln -s ../init.d/spacenavd S99spacenavd
+
+cd /etc/rc3.d
+rm -f S99spacenavd
+ln -s ../init.d/spacenavd S99spacenavd
