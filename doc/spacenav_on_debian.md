@@ -1,4 +1,10 @@
 # SpaceNavigator on Debian
+This guide is useful for setting up a the spacenav userland driver `spacenavd` and 
+the spnav C library `libspnav` on a debian system.
+If you are using another linux distribution some adjustments might be necessary.
+
+The spacenav userland driver and the spnav library are a requirement to build and install
+the SpaceNavigator Python C extension `pyspacenav`.
 
 ## Install dependencies (optional)
 For `spacenavd` and `libspnav` with X11 support
@@ -6,7 +12,7 @@ For `spacenavd` and `libspnav` with X11 support
 	sudo apt-get update
 	sudo apt-get install libx11-dev -y
 
-For OpenGL example "cube" (not working on Raspberry PI):
+For OpenGL example "cube" (not working on Raspbian because of missing GLX support):
 
 	sudo apt-get install libgl1-mesa-dev -y
 	sudo apt-get install freeglut3-dev -y
@@ -36,8 +42,6 @@ Replace `177` by the current revision of [HEAD](http://sourceforge.net/p/spacena
 	unzip spacenav-code-177-trunk.zip
 	ln -s spacenav-code-177-trunk/spacenavd spacenavd
 	ln -s spacenav-code-177-trunk/libspnav libspnav
-
-Hint: Has currently a bug which prevents the spacenavd connecting with the device.
 
 ## Compile and install driver and library
 ### SpaceNav Driver
@@ -86,7 +90,7 @@ Simple example
 	./simple_af_unix
 	popd
 
-OpenGL example (not working on Raspberry PI)
+OpenGL example (not working on Raspbian because of missing GLX support)
 
 	pushd ./libspnav/examples/cube
 	make
