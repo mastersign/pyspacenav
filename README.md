@@ -1,7 +1,7 @@
 PySpaceNav
 ==========
 
-PySpaceNav is a C extension for Python, which exposes the capability to receive input events from Connexion SpaceNavigator devices (3D mouses). PySpaceNav depends on the [SpaceNav] project. It make use `libspnav` to communicate with the userland driver `spacenavd`. PySpaceNav is published under the [MIT license].
+PySpaceNav is a C extension for Python 3, which exposes the capability to receive input events from Connexion SpaceNavigator devices (3D mouses). PySpaceNav depends on the [SpaceNav] project. It make use `libspnav` to communicate with the userland driver `spacenavd`. PySpaceNav is published under the [MIT license].
 
 Currently PySpaceNav only supports Linux; support for Windows is planned.
 
@@ -13,14 +13,14 @@ Make shure you have build and installed `spacenavd` and `libspnav`. You can use 
 Run the following lines to build and install PySpaceNav:
 
 ```shell
-python setup.py build
-python setup.py install
+python3 setup.py build
+python3 setup.py install
 ```
 
 To see if everything works you can run the included [example](example.py):
 
 ```shell
-python example.py
+python3 example.py
 ```
 
 Check out the [API] of **PySpaceNav** for detailed information.
