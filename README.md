@@ -17,7 +17,7 @@ python setup.py build
 python setup.py install
 ```
 
-To see if everything works you can run the included example:
+To see if everything works you can run the included [example](example.py):
 
 ```shell
 python example.py
@@ -54,3 +54,4 @@ else:
 [SpaceNav on Debian]: doc/spacenav_on_debian.md
 [MIT license]: http://opensource.org/licenses/MIT
 [API]: doc/api.md
+
