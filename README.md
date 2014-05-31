@@ -51,6 +51,6 @@ else:
 ```
 
 [SpaceNav]: http://spacenav.sourceforge.net/
-[SpaceNav on Debian]: doc/spacenav_on_debian
+[SpaceNav on Debian]: doc/spacenav_on_debian.md
 [MIT license]: http://opensource.org/licenses/MIT
-[API]: doc/api
+[API]: doc/api.md
