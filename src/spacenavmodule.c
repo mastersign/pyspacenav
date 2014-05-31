@@ -1,3 +1,15 @@
+/* 
+ * PySpaceNav
+ * 
+ * a python C extension for the SpaceNav project
+ * 
+ * https://github.com/mastersign/pyspacenav
+ * 
+ * Author: Tobias Kiertscher <dev@mastersign.de>
+ * License: MIT License
+ *
+ */
+
 #include <Python.h>
 #include <structmember.h>
 #include <spnav.h>
