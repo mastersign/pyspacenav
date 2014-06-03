@@ -7,9 +7,15 @@ The spacenav userland driver and the spnav library are a requirement to build an
 the SpaceNavigator Python C extension `pyspacenav`.
 
 ## Install dependencies (optional)
-For `spacenavd` and `libspnav` with X11 support
 
 	sudo apt-get update
+
+For build support
+
+	sudo apt-get install gcc make
+
+For `spacenavd` and `libspnav` with X11 support
+
 	sudo apt-get install libx11-dev -y
 
 For OpenGL example "cube" (not working on Raspbian because of missing GLX support):
@@ -26,7 +32,7 @@ For OpenGL example "cube" (not working on Raspbian because of missing GLX suppor
 
 	wget -O spacenavd-0.5.tar.gz http://sourceforge.net/projects/spacenav/files/spacenav%20daemon/spacenavd%200.5/spacenavd-0.5.tar.gz/download
 	tar -xf spacenavd-0.5.tar.gz
-	ln -s spacnavd-0.5 spacenavd
+	ln -s spacenavd-0.5 spacenavd
 
 The version 0.5 has a known bug: the period value of any motion event is flawed. A solution is provided [here](http://sourceforge.net/p/spacenav/bugs/4/)
 
@@ -59,9 +65,8 @@ Build and install
 Install custom configuration for `spacenavd`
 
 	pushd ./spacenavd
-	sudo cp ./doc/example_spnavrc /etc/spnavrc
-	sudo nano /etc/spnavrc
-	# => uncomment the led line
+	sed 's/#led = on/led = on/' doc/example-spnavrc > doc/my-spnavrc
+	sudo cp doc/my-spnavrc /etc/spnavrc
 	popd
 
 Install init script (with custom `setup_init.2`). 
@@ -74,7 +79,7 @@ into the `spacenavd` directory. Afterwards it can be run with root previleges.
 
 Deactivate X11 support if not needed
 
-	sed -i 's/X11=yes/X11=no/' ./configure
+	sed -i 's/X11=yes/X11=no/' libspnav/configure
 
 Build and install
 

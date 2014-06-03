@@ -10,11 +10,17 @@ Quick Start
 
 Make shure you have build and installed `spacenavd` and `libspnav`. You can use the included guide [SpaceNav on Debian].
 
+For building PySpaceNav you need the development package for your python.
+
+```shell
+sudo apt-get install python3-dev
+```
+
 Run the following lines to build and install PySpaceNav:
 
 ```shell
 python3 setup.py build
-python3 setup.py install
+sudo python3 setup.py install
 ```
 
 To see if everything works you can run the included [example](example.py):
