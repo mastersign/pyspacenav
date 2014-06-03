@@ -2,7 +2,9 @@ import spacenav, atexit
 
 try:
 	# open the connection
+	print("Opening connection to SpaceNav driver ...")
 	spacenav.open()
+	print("... connection established.")
 	# register the close function if no exception was raised
 	atexit.register(spacenav.close)
 except spacenav.ConnectionError:
