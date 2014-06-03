@@ -9,9 +9,9 @@ spacenavmodule = Extension(
 	sources = ['src/spacenavmodule.c'])
 
 setup(
-	name = 'SpaceNavigator',
+	name = 'PySpaceNav',
 	version = '0.1',
-	description = 'A python extension to communicate to spacenavd from the spacenav project.',
+	description = 'A python extension to communicate to spacenavd from the SpaceNav project.',
 	author = 'Tobias Kiertscher',
 	author_email = 'dev@mastersign.de',
 	url = 'http://www.mastersign.de',
