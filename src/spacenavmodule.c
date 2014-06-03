@@ -1,18 +1,10 @@
-/* 
- * PySpaceNav
- * 
- * a python C extension for the SpaceNav project
- * 
- * https://github.com/mastersign/pyspacenav
- * 
- * Author: Tobias Kiertscher <dev@mastersign.de>
- * License: MIT License
- *
- */
-
 #include <Python.h>
 #include <structmember.h>
 #include <spnav.h>
+
+#if PY_MAJOR_VERSION >= 3
+#define IS_PY3K
+#endif
 
 static PyObject *ConnectionError;
 
@@ -91,7 +83,12 @@ static PyMemberDef ButtonEvent_members[] = {
 };
 
 static PyTypeObject ButtonEventType = {
+#ifdef IS_PY3K
 	PyVarObject_HEAD_INIT(NULL, 0)
+#else
+	PyObject_HEAD_INIT(NULL)
+	0,
+#endif
 	"spacenav.ButtonEvent",       /* tp_name */
 	sizeof(ButtonEvent),          /* tp_basicsize */
 };
@@ -144,7 +141,12 @@ static PyMemberDef MotionEvent_members[] = {
 };
 
 static PyTypeObject MotionEventType = {
+#ifdef IS_PY3K
 	PyVarObject_HEAD_INIT(NULL, 0)
+#else
+	PyObject_HEAD_INIT(NULL)
+	0,
+#endif
 	"spacenav.MotionEvent",       /* tp_name */
 	sizeof(MotionEvent),          /* tp_basicsize */
 };
@@ -236,14 +238,17 @@ static PyObject * spacenav_remove_events(PyObject *self, PyObject *args)
 	return PyLong_FromLong(spnav_remove_events(type));
 }
 
+
 static PyMethodDef SpaceNavMethods[] = {
-	{ "open", spacenav_open, METH_NOARGS, "Open connection to spacenavd." },
-	{ "close", spacenav_close, METH_NOARGS, "Close connection to spacenavd." },
-	{ "poll", spacenav_poll, METH_NOARGS, "Poll for next event." },
-	{ "wait", spacenav_wait, METH_NOARGS, "Wait for next event." },
-	{ "remove_events", spacenav_remove_events, METH_VARARGS, "Removes buffered events from the queue." },
+	{ "open", (PyCFunction)spacenav_open, METH_NOARGS, "Open connection to spacenavd." },
+	{ "close", (PyCFunction)spacenav_close, METH_NOARGS, "Close connection to spacenavd." },
+	{ "poll", (PyCFunction)spacenav_poll, METH_NOARGS, "Poll for next event." },
+	{ "wait", (PyCFunction)spacenav_wait, METH_NOARGS, "Wait for next event." },
+	{ "remove_events", (PyCFunction)spacenav_remove_events, METH_VARARGS, "Removes buffered events from the queue." },
 	{ NULL, NULL, 0, NULL }
 };
+
+#ifdef IS_PY3K
 
 static struct PyModuleDef spacenavmodule = {
 	PyModuleDef_HEAD_INIT,
@@ -254,7 +259,20 @@ static struct PyModuleDef spacenavmodule = {
 	SpaceNavMethods
 };
 
+#define INTERROR return NULL
+
 PyMODINIT_FUNC PyInit_spacenav(void)
+
+#else
+
+#define INTERROR return
+
+#ifndef PyMODINIT_FUNC
+#define PyMODINIT_FUNC void
+#endif
+PyMODINIT_FUNC initspacenav(void)
+
+#endif
 {
 	PyObject *m;
 
@@ -265,7 +283,7 @@ PyMODINIT_FUNC PyInit_spacenav(void)
 	ButtonEventType.tp_members = ButtonEvent_members;
 	ButtonEventType.tp_str = (reprfunc)ButtonEvent_str;
 	if (PyType_Ready(&ButtonEventType) < 0)
-		return NULL;
+		INTERROR;
 
 	MotionEventType.tp_flags = Py_TPFLAGS_DEFAULT;
 	MotionEventType.tp_doc = "A SpaceNav motion event.";
@@ -274,12 +292,16 @@ PyMODINIT_FUNC PyInit_spacenav(void)
 	MotionEventType.tp_members = MotionEvent_members;
 	MotionEventType.tp_str = (reprfunc)MotionEvent_str;
 	if (PyType_Ready(&MotionEventType) < 0)
-		return NULL;
+		INTERROR;
 
+#ifdef IS_PY3K
 	m = PyModule_Create(&spacenavmodule);
+#else
+	m = Py_InitModule("spacenav", SpaceNavMethods);
+#endif
 
 	if (m == NULL)
-		return NULL;
+		INTERROR;
 
 	set_state(m, 0);
 
@@ -296,5 +318,7 @@ PyMODINIT_FUNC PyInit_spacenav(void)
 	PyModule_AddIntConstant(m, "EVENT_TYPE_BUTTON", SPNAV_EVENT_BUTTON);
 	PyModule_AddIntConstant(m, "EVENT_TYPE_ANY", SPNAV_EVENT_ANY);
 
+#ifdef IS_PY3K
 	return m;
+#endif
 }
