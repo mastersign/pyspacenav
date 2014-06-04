@@ -18,14 +18,20 @@
 #define IS_PY3K
 #endif
 
+static PyObject *module;
 static PyObject *ConnectionError;
 
 static int open;
 
-static void set_state(PyObject *m, int state)
+static void set_state(int state)
 {
+	if (module == NULL) 
+	{
+		printf("%s\n", "set_state failed ... module not initialized");
+		return;
+	}
 	PyObject *md;
-	md = PyModule_GetDict(m);
+	md = PyModule_GetDict(module);
 
 	open = state;
 	if (open)
@@ -45,7 +51,7 @@ static PyObject * spacenav_open(PyObject *self, PyObject *args)
 	  	PyErr_SetString(ConnectionError, "Connection to spacenavd failed.");
 		return NULL;
 	}
-	set_state(self, -1);
+	set_state(-1);
 	Py_RETURN_NONE;
 }
 
@@ -54,7 +60,7 @@ static PyObject * spacenav_close(PyObject *self, PyObject *args)
 	if (open)
 	{
 		spnav_close();
-		set_state(self, 0);
+		set_state(0);
 	}
 	Py_RETURN_NONE;
 }
@@ -230,7 +236,7 @@ static PyObject * spacenav_wait(PyObject *self, PyObject *args)
 	else
 	{
 		spnav_close();
-		set_state(self, 0);
+		set_state(0);
 		Py_RETURN_NONE;
 	}
 }
@@ -249,7 +255,6 @@ static PyObject * spacenav_remove_events(PyObject *self, PyObject *args)
 	}
 	return PyLong_FromLong(spnav_remove_events(type));
 }
-
 
 static PyMethodDef SpaceNavMethods[] = {
 	{ "open", (PyCFunction)spacenav_open, METH_NOARGS, "Open connection to spacenavd." },
@@ -286,8 +291,6 @@ PyMODINIT_FUNC initspacenav(void)
 
 #endif
 {
-	PyObject *m;
-
 	ButtonEventType.tp_flags = Py_TPFLAGS_DEFAULT;
 	ButtonEventType.tp_doc = "A SpaceNav button event.";
 	ButtonEventType.tp_new = PyType_GenericNew;
@@ -307,30 +310,32 @@ PyMODINIT_FUNC initspacenav(void)
 		INTERROR;
 
 #ifdef IS_PY3K
-	m = PyModule_Create(&spacenavmodule);
+	module = PyModule_Create(&spacenavmodule);
 #else
-	m = Py_InitModule("spacenav", SpaceNavMethods);
+	module = Py_InitModule("spacenav", SpaceNavMethods);
 #endif
 
-	if (m == NULL)
+	if (module == NULL)
 		INTERROR;
 
-	set_state(m, 0);
+	Py_INCREF(module);
+
+	set_state(0);
 
 	Py_INCREF(&ButtonEventType);
-	PyModule_AddObject(m, "ButtonEvent", (PyObject *)&ButtonEventType);
+	PyModule_AddObject(module, "ButtonEvent", (PyObject *)&ButtonEventType);
 	Py_INCREF(&MotionEventType);
-	PyModule_AddObject(m, "MotionEvent", (PyObject *)&MotionEventType);
+	PyModule_AddObject(module, "MotionEvent", (PyObject *)&MotionEventType);
 
 	ConnectionError = PyErr_NewException("spacenav.ConnectionError", NULL, NULL);
 	Py_INCREF(ConnectionError);
-	PyModule_AddObject(m, "ConnectionError", ConnectionError);
+	PyModule_AddObject(module, "ConnectionError", ConnectionError);
 
-	PyModule_AddIntConstant(m, "EVENT_TYPE_MOTION", SPNAV_EVENT_MOTION);
-	PyModule_AddIntConstant(m, "EVENT_TYPE_BUTTON", SPNAV_EVENT_BUTTON);
-	PyModule_AddIntConstant(m, "EVENT_TYPE_ANY", SPNAV_EVENT_ANY);
+	PyModule_AddIntConstant(module, "EVENT_TYPE_MOTION", SPNAV_EVENT_MOTION);
+	PyModule_AddIntConstant(module, "EVENT_TYPE_BUTTON", SPNAV_EVENT_BUTTON);
+	PyModule_AddIntConstant(module, "EVENT_TYPE_ANY", SPNAV_EVENT_ANY);
 
 #ifdef IS_PY3K
-	return m;
+	return module;
 #endif
 }
