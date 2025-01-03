@@ -1,12 +1,13 @@
 #!/usr/bin/python3
+from setuptools import setup, Extension
 
-from distutils.core import setup, Extension
 
 spacenavmodule = Extension(
 	'spacenav', 
 	library_dirs = ['/usr/local/include'],
 	libraries = ['spnav'],
-	sources = ['src/spacenavmodule.c'])
+	sources = ['src/spacenavmodule.c']
+)
 
 setup(
 	name = 'PySpaceNav',
@@ -15,4 +16,5 @@ setup(
 	author = 'Tobias Kiertscher',
 	author_email = 'dev@mastersign.de',
 	url = 'http://www.mastersign.de',
-	ext_modules = [ spacenavmodule ] )
+	ext_modules = [ spacenavmodule ],
+)
